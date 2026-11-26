@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="VidsaR.Core/VidsaR.Core.csproj" Id="25948a48-7747-4014-b8de-15f0ca08f154" />
+  <Project Path="VidsaR.Desktop/VidsaR.Desktop.csproj" Id="2c7095e7-d431-4528-90af-e0f057b7eb90" />
+  <Project Path="VidsaR.Infrastructure/VidsaR.Infrastructure.csproj" Id="566a8d3f-65d1-4b73-af3e-346f9f9ca4b5" />
+  <Project Path="VidsaR.Tests/VidsaR.Tests.csproj" Id="a4dc850a-164b-4740-9c6d-9dd71c836304" />
+</Solution>

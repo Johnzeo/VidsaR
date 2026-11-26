@@ -1,0 +1,661 @@
+﻿
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:VidsaR.Desktop.ViewModels"
+        xmlns:controls="using:VidsaR.Desktop.Controls"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        d:DesignWidth="1100"
+        d:DesignHeight="700"
+        x:Class="VidsaR.Desktop.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Title="VidsaR"
+        Width="1100"
+        Height="700"
+        MinWidth="750"
+        MinHeight="500"
+        Background="#101116">
+
+    <Grid ColumnDefinitions="190,*"
+          RowDefinitions="75,*">
+
+        <!-- Боковая панель -->
+        <Border Grid.Column="0"
+                Grid.RowSpan="2"
+                Background="#191B23"
+                Padding="15">
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Spacing="25">
+
+                    <TextBlock Text="VidsaR"
+                               FontSize="28"
+                               FontWeight="Bold"
+                               Foreground="#FFFFFF"/>
+
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="МЕДИА"
+                                   Foreground="#777B8A"
+                                   FontSize="11"
+                                   FontWeight="Bold"/>
+
+                        <Button Content="Мои файлы"/>
+                        <Button Content="Обработка"/>
+                        <Button Content="Конвертация"/>
+                    </StackPanel>
+
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="ПРИЛОЖЕНИЕ"
+                                   Foreground="#777B8A"
+                                   FontSize="11"
+                                   FontWeight="Bold"/>
+
+                        <Button Content="История"/>
+                        <Button Content="Настройки"/>
+                    </StackPanel>
+
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <!-- Верхняя панель -->
+        <Border Grid.Column="1"
+                Grid.Row="0"
+                Background="#191B23"
+                Padding="20">
+
+            <Grid ColumnDefinitions="*,Auto">
+
+                <TextBlock Text="Медиастудия"
+                           FontSize="22"
+                           FontWeight="SemiBold"
+                           Foreground="#FFFFFF"
+                           VerticalAlignment="Center"/>
+
+                <StackPanel Grid.Column="1"
+                            Spacing="3"
+                            VerticalAlignment="Center">
+
+                    <TextBlock Text="Аудио и видео"
+                               Foreground="#9296A5"
+                               HorizontalAlignment="Right"/>
+
+                    <TextBlock Text="{Binding FFmpegStatus}"
+                               Foreground="#55D68B"
+                               FontSize="11"
+                               HorizontalAlignment="Right"
+                               TextWrapping="Wrap"
+                               MaxWidth="230"/>
+
+                </StackPanel>
+
+            </Grid>
+        </Border>
+
+        <!-- Рабочая область -->
+        <Grid Grid.Column="1"
+              Grid.Row="1"
+              Margin="20"
+              RowDefinitions="Auto,*">
+
+            <StackPanel Spacing="8">
+                <TextBlock Text="Рабочее пространство"
+                           FontSize="26"
+                           FontWeight="Bold"
+                           Foreground="#FFFFFF"/>
+
+                <TextBlock Text="Добавьте медиафайл, чтобы начать работу"
+                           FontSize="14"
+                           Foreground="#9296A5"/>
+            </StackPanel>
+
+            <Border Grid.Row="1"
+                    Margin="0,20,0,0"
+                    Background="#191B23"
+                    BorderBrush="#343744"
+                    BorderThickness="1"
+                    CornerRadius="14"
+                    Padding="20">
+
+                <Grid>
+
+                    <!-- Файл не выбран -->
+                    <StackPanel HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Spacing="18"
+                                IsVisible="{Binding !HasSelectedFile}">
+
+                        <TextBlock Text="＋"
+                                   FontSize="55"
+                                   Foreground="#8B7CFF"
+                                   HorizontalAlignment="Center"/>
+
+                        <TextBlock Text="Добавьте аудио или видео"
+                                   FontSize="22"
+                                   FontWeight="SemiBold"
+                                   Foreground="#FFFFFF"
+                                   HorizontalAlignment="Center"/>
+
+                        <TextBlock Text="Здесь будет находиться ваша рабочая область"
+                                   FontSize="14"
+                                   Foreground="#9296A5"
+                                   HorizontalAlignment="Center"
+                                   TextWrapping="Wrap"/>
+
+                        <Button Content="Выбрать файл"
+                                Padding="25,12"
+                                Background="#7565E8"
+                                Foreground="White"
+                                HorizontalAlignment="Center"
+                                Click="SelectFile_Click"/>
+
+                    </StackPanel>
+
+                    <!-- Файл выбран -->
+                    <ScrollViewer IsVisible="{Binding HasSelectedFile}"
+                                  VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled">
+
+                        <StackPanel Spacing="18">
+
+                            <TextBlock Text="Выбранный файл"
+                                       FontSize="24"
+                                       FontWeight="Bold"
+                                       Foreground="White"/>
+
+                            <!-- Информация об аудио -->
+                            <Grid ColumnDefinitions="Auto,*"
+                                  ColumnSpacing="20"
+                                  IsVisible="{Binding IsAudioFile}">
+
+                                <!-- Обложка -->
+                                <StackPanel Grid.Column="0"
+                                            Spacing="10"
+                                            MaxWidth="180">
+
+                                    <Border Width="180"
+                                            Height="180"
+                                            CornerRadius="12"
+                                            Background="#252833"
+                                            ClipToBounds="True">
+
+                                        <Grid>
+
+                                            <Image Source="{Binding CoverImage}"
+                                                   Stretch="UniformToFill"
+                                                   IsVisible="{Binding HasCoverImage}"/>
+
+                                            <StackPanel HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        Spacing="8"
+                                                        IsVisible="{Binding !HasCoverImage}">
+
+                                                <TextBlock Text="♫"
+                                                           FontSize="65"
+                                                           Foreground="#8B7CFF"
+                                                           HorizontalAlignment="Center"/>
+
+                                                <TextBlock Text="Нет обложки"
+                                                           FontSize="13"
+                                                           Foreground="#9296A5"
+                                                           HorizontalAlignment="Center"/>
+
+                                            </StackPanel>
+
+                                        </Grid>
+                                    </Border>
+
+                                    <Button Content="Изменить обложку"
+                                            Padding="10,10"
+                                            Background="#343744"
+                                            Foreground="White"
+                                            HorizontalAlignment="Center"
+                                            Click="SelectCover_Click"/>
+
+                                </StackPanel>
+
+                                <!-- Метаданные -->
+                                <StackPanel Grid.Column="1"
+                                            Spacing="10">
+
+                                    <TextBlock Text="Название"
+                                               Foreground="#9296A5"
+                                               FontSize="13"/>
+
+                                    <TextBox Text="{Binding Title, Mode=TwoWay}"
+                                             Background="#252833"
+                                             Foreground="White"
+                                             BorderBrush="#414555"
+                                             Padding="10"/>
+
+                                    <TextBlock Text="Исполнитель"
+                                               Foreground="#9296A5"
+                                               FontSize="13"/>
+
+                                    <TextBox Text="{Binding Artist, Mode=TwoWay}"
+                                             Background="#252833"
+                                             Foreground="White"
+                                             BorderBrush="#414555"
+                                             Padding="10"/>
+
+                                    <TextBlock Text="Альбом"
+                                               Foreground="#9296A5"
+                                               FontSize="13"/>
+
+                                    <TextBox Text="{Binding Album, Mode=TwoWay}"
+                                             Background="#252833"
+                                             Foreground="White"
+                                             BorderBrush="#414555"
+                                             Padding="10"/>
+
+                                    <TextBlock Text="Жанр"
+                                               Foreground="#9296A5"
+                                               FontSize="13"/>
+
+                                    <TextBox Text="{Binding Genre, Mode=TwoWay}"
+                                             Background="#252833"
+                                             Foreground="White"
+                                             BorderBrush="#414555"
+                                             Padding="10"
+                                             Watermark="Например, Rock"/>
+
+                                    <TextBlock Text="Год выпуска"
+                                               Foreground="#9296A5"
+                                               FontSize="13"/>
+
+                                    <TextBox Text="{Binding Year, Mode=TwoWay}"
+                                             Background="#252833"
+                                             Foreground="White"
+                                             BorderBrush="#414555"
+                                             Padding="10"
+                                             Watermark="Например, 2026"/>
+
+                                </StackPanel>
+
+                            </Grid>
+
+                            <!-- Информация о видео -->
+                            <StackPanel Spacing="12"
+                                        IsVisible="{Binding !IsAudioFile}">
+
+                                <TextBlock Text="{Binding SelectedFileName}"
+                                           FontSize="20"
+                                           Foreground="#8B7CFF"
+                                           TextWrapping="Wrap"/>
+
+                                <TextBlock Text="Видеофайл"
+                                           FontSize="15"
+                                           Foreground="#9296A5"/>
+
+                            </StackPanel>
+
+                            <!-- Информация о файле -->
+                            <Border Background="#252833"
+                                    CornerRadius="10"
+                                    Padding="15">
+
+                                <Grid ColumnDefinitions="*,*"
+                                      RowDefinitions="Auto,Auto"
+                                      ColumnSpacing="15"
+                                      RowSpacing="8">
+
+                                    <TextBlock Text="Тип файла"
+                                               Foreground="#9296A5"
+                                               FontSize="12"/>
+
+                                    <TextBlock Grid.Column="1"
+                                               Text="Длительность"
+                                               Foreground="#9296A5"
+                                               FontSize="12"/>
+
+                                    <TextBlock Grid.Row="1"
+                                               Text="{Binding FileType}"
+                                               Foreground="White"
+                                               FontSize="16"
+                                               FontWeight="SemiBold"/>
+
+                                    <TextBlock Grid.Row="1"
+                                               Grid.Column="1"
+                                               Text="{Binding FileDuration}"
+                                               Foreground="#8B7CFF"
+                                               FontSize="16"
+                                               FontWeight="SemiBold"/>
+
+                                </Grid>
+
+                            </Border>
+
+                            <!-- Путь к файлу -->
+                            <TextBlock Text="{Binding SelectedFilePath}"
+                                       Foreground="#9296A5"
+                                       FontSize="12"
+                                       TextWrapping="Wrap"/>
+
+                            <!-- Звуковая дорожка -->
+                            <Border Background="#252833"
+                                    CornerRadius="10"
+                                    Padding="15"
+                                    IsVisible="{Binding IsAudioFile}">
+
+                                <StackPanel Spacing="10">
+
+                                    <TextBlock Text="ЗВУКОВАЯ ДОРОЖКА"
+                                               Foreground="#9296A5"
+                                               FontSize="12"
+                                               FontWeight="SemiBold"/>
+
+                                    <Border Background="#101116"
+                                            BorderBrush="#414555"
+                                            BorderThickness="1"
+                                            CornerRadius="6"
+                                            Height="130"
+                                            ClipToBounds="True">
+
+                                        <controls:WaveformControl
+                                            x:Name="WaveformEditor"
+                                            Peaks="{Binding WaveformPeaks}"
+                                            WaveformBrush="#55B8FF"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Stretch"/>
+
+                                    </Border>
+
+                                    <!-- Текущее время воспроизведения -->
+                                    <TextBlock x:Name="PlaybackTimeText"
+                                               Text="00:00.000 / 00:00.000"
+                                               Foreground="#9296A5"
+                                               FontSize="12"
+                                               HorizontalAlignment="Right"/>
+
+                                    <!-- Временная шкала монтажа -->
+                                    <TextBlock Text="ВРЕМЕННАЯ ШКАЛА"
+                                               Foreground="#9296A5"
+                                               FontSize="12"
+                                               FontWeight="SemiBold"/>
+
+                                    <Border Background="#101116"
+                                            BorderBrush="#414555"
+                                            BorderThickness="1"
+                                            CornerRadius="6"
+                                            Height="110"
+                                            ClipToBounds="True">
+
+                                        <controls:TimelineControl
+                                            Clips="{Binding AudioClips}"
+                                            DurationSeconds="{Binding TimelineDurationSeconds}"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Stretch"/>
+
+                                    </Border>
+
+                                    <!-- Кнопки воспроизведения -->
+                                    <StackPanel Orientation="Horizontal"
+                                                HorizontalAlignment="Center"
+                                                Spacing="10">
+
+                                        <!-- Воспроизведение Timeline -->
+                                        <Button x:Name="TimelinePlayPauseButton"
+                                                Content="▶ Воспроизвести Timeline"
+                                                Width="200"
+                                                Height="42"
+                                                Padding="12,10"
+                                                HorizontalContentAlignment="Center"
+                                                VerticalContentAlignment="Center"
+                                                Background="#287DA8"
+                                                Foreground="White"
+                                                Click="TimelinePlay_Click"/>
+
+                                        <!-- Обычное воспроизведение -->
+                                        <Button x:Name="PlayPauseButton"
+                                                Content="▶ Воспроизвести"
+                                                Width="160"
+                                                Height="42"
+                                                Padding="15,10"
+                                                HorizontalContentAlignment="Center"
+                                                VerticalContentAlignment="Center"
+                                                Background="#7565E8"
+                                                Foreground="White"
+                                                Click="Play_Click"/>
+
+                                        <Button Content="⏹ Остановить"
+                                                Padding="15,10"
+                                                Background="#343744"
+                                                Foreground="White"
+                                                Click="Stop_Click"/>
+
+                                        <!-- Discord Mode -->
+                                        <Button Padding="15,10"
+                                                Background="#5865F2"
+                                                Foreground="White"
+                                                Click="DiscordMode_Click">
+
+                                            <StackPanel Orientation="Horizontal"
+                                                        Spacing="8"
+                                                        VerticalAlignment="Center">
+
+                                                <Image Source="avares://VidsaR.Desktop/Assets/discord.png"
+                                                       Width="20"
+                                                       Height="20"
+                                                       Stretch="Uniform"/>
+
+                                                <TextBlock Text="Discord Mode"
+                                                           VerticalAlignment="Center"
+                                                           FontWeight="SemiBold"/>
+
+                                            </StackPanel>
+
+                                        </Button>
+
+                                    </StackPanel>
+
+                                </StackPanel>
+
+                            </Border>
+
+                            <!-- Кнопки управления -->
+                            <WrapPanel>
+
+                                <Button Content="Выбрать другой файл"
+                                        Padding="20,12"
+                                        Background="#7565E8"
+                                        Foreground="White"
+                                        Margin="0,0,12,10"
+                                        Click="SelectFile_Click"/>
+
+                                <Button Content="Добавить MP3 в Timeline"
+                                        Padding="20,12"
+                                        Background="#287DA8"
+                                        Foreground="White"
+                                        Margin="0,0,12,10"
+                                        IsVisible="{Binding IsAudioFile}"
+                                        Click="AddMp3ToTimeline_Click"/>
+
+                                <Button Content="Убрать файл"
+                                        Padding="20,12"
+                                        Background="#343744"
+                                        Foreground="White"
+                                        Margin="0,0,12,10"
+                                        Click="RemoveFile_Click"/>
+
+                                <Button Content="Сохранить копию MP3"
+                                        Padding="20,12"
+                                        Background="#26875B"
+                                        Foreground="White"
+                                        Margin="0,0,12,10"
+                                        IsVisible="{Binding IsAudioFile}"
+                                        Click="SaveCopy_Click"/>
+
+                                <!-- Экспорт всей Timeline -->
+                                <Button Content="Экспорт Timeline в MP3"
+                                        Padding="20,12"
+                                        Background="#26875B"
+                                        Foreground="White"
+                                        Margin="0,0,12,10"
+                                        IsVisible="{Binding IsAudioFile}"
+                                        Click="ExportTimeline_Click"/>
+
+                            </WrapPanel>
+
+                        </StackPanel>
+                    </ScrollViewer>
+
+                </Grid>
+
+            </Border>
+
+        </Grid>
+
+        <!-- Экран первоначальной загрузки -->
+        <Border Grid.Column="0"
+                Grid.Row="0"
+                Grid.ColumnSpan="2"
+                Grid.RowSpan="2"
+                Background="#101116"
+                IsVisible="{Binding IsInitializing}"
+                ZIndex="50">
+
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Spacing="20">
+
+                <TextBlock Text="VidsaR"
+                           FontSize="38"
+                           FontWeight="Bold"
+                           Foreground="#8B7CFF"
+                           HorizontalAlignment="Center"/>
+
+                <ProgressBar IsIndeterminate="True"
+                             Width="220"
+                             Height="5"
+                             Foreground="#8B7CFF"
+                             Background="#343744"/>
+
+                <TextBlock Text="Подготавливаем приложение..."
+                           FontSize="16"
+                           Foreground="#FFFFFF"
+                           HorizontalAlignment="Center"/>
+
+                <TextBlock Text="Проверяем необходимые компоненты"
+                           FontSize="12"
+                           Foreground="#9296A5"
+                           HorizontalAlignment="Center"/>
+
+            </StackPanel>
+        </Border>
+
+        <!-- Окно статуса сохранения -->
+        <Border Grid.Column="0"
+                Grid.Row="0"
+                Grid.ColumnSpan="2"
+                Grid.RowSpan="2"
+                Background="#99000000"
+                IsVisible="False"
+                x:Name="SaveStatusOverlay"
+                ZIndex="100">
+
+            <Border Background="#20232D"
+                    BorderBrush="#414555"
+                    BorderThickness="1"
+                    CornerRadius="16"
+                    Padding="30"
+                    Width="360"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+
+                <StackPanel Spacing="18"
+                            HorizontalAlignment="Center">
+
+                    <!-- Состояние сохранения -->
+                    <StackPanel x:Name="SavingState"
+                                Spacing="15"
+                                IsVisible="True">
+
+                        <TextBlock x:Name="SaveProgressText"
+                                   Text="Сохраняем файл... 0%"
+                                   FontSize="20"
+                                   FontWeight="SemiBold"
+                                   Foreground="White"
+                                   HorizontalAlignment="Center"/>
+
+                        <ProgressBar x:Name="SaveProgressBar"
+                                     Width="260"
+                                     Height="8"
+                                     Minimum="0"
+                                     Maximum="100"
+                                     Value="0"
+                                     Foreground="#8B7CFF"
+                                     Background="#343744"/>
+
+                        <TextBlock x:Name="SaveProgressDescription"
+                                   Text="Подготовка..."
+                                   FontSize="13"
+                                   Foreground="#9296A5"
+                                   HorizontalAlignment="Center"/>
+
+                    </StackPanel>
+
+                    <!-- Успешное сохранение -->
+                    <StackPanel x:Name="SaveSuccessState"
+                                Spacing="15"
+                                IsVisible="False">
+
+                        <TextBlock Text="✓"
+                                   FontSize="48"
+                                   Foreground="#55D68B"
+                                   HorizontalAlignment="Center"/>
+
+                        <TextBlock Text="Файл успешно сохранён!"
+                                   FontSize="19"
+                                   FontWeight="SemiBold"
+                                   Foreground="White"
+                                   HorizontalAlignment="Center"
+                                   TextWrapping="Wrap"/>
+
+                    </StackPanel>
+
+                    <!-- Ошибка сохранения -->
+                    <StackPanel x:Name="SaveErrorState"
+                                Spacing="15"
+                                IsVisible="False">
+
+                        <TextBlock Text="✕"
+                                   FontSize="48"
+                                   Foreground="#FF6262"
+                                   HorizontalAlignment="Center"/>
+
+                        <TextBlock Text="Не удалось сохранить файл"
+                                   FontSize="19"
+                                   FontWeight="SemiBold"
+                                   Foreground="White"
+                                   HorizontalAlignment="Center"
+                                   TextWrapping="Wrap"/>
+
+                        <TextBlock x:Name="SaveErrorText"
+                                   Text=""
+                                   FontSize="12"
+                                   Foreground="#FF9999"
+                                   TextWrapping="Wrap"
+                                   HorizontalAlignment="Center"/>
+
+                    </StackPanel>
+
+                    <!-- Кнопка закрытия -->
+                    <Button x:Name="SaveStatusOkButton"
+                            Content="ОК"
+                            Padding="30,10"
+                            Background="#7565E8"
+                            Foreground="White"
+                            HorizontalAlignment="Center"
+                            IsVisible="False"
+                            Click="SaveStatusOk_Click"/>
+
+                </StackPanel>
+
+            </Border>
+
+        </Border>
+
+    </Grid>
+
+</Window>
